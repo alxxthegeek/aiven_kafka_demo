@@ -30,19 +30,24 @@ class postgres_database_handler(object):
         print('config')
         self.logging_start()
 
-        self.connection = self.connect_to_database(self.dbname, self.dbuser, self.dbpassword, self.dbhost, self.dbport)
-        self.cursor = self.get_cursor(self.connection)
-        self.check_database(self.cursor)
-        print('ssuccess')
-        self.close_database(self.connection)
+        # self.connection = self.connect_to_database(self.dbname, self.dbuser, self.dbpassword, self.dbhost, self.dbport)
+        # self.cursor = self.get_cursor(self.connection)
+        # self.check_database(self.cursor)
+        # print('ssuccess')
+        # self.close_database(self.connection)
 
     def run(self):
         postgres_database_handler()
         return
 
     def connect_to_database(self, database_name, database_user, database_password, database_host, database_port):
-        # con = psycopg2.connect(database=database_name, user=database=database_user", password=database_password, host=database_host, port=database_port)
         con = psycopg2.connect(database=database_name)
+        print('have conn')
+        return con
+
+    def connect(self):
+        # con = psycopg2.connect(database=self.dbname, user=database=sekf,dbuser, password=self.dbpassword, host=dbhost, port=self.dbport)
+        con = psycopg2.connect(database=self.dbname)
         print('have conn')
         return con
 
@@ -50,7 +55,9 @@ class postgres_database_handler(object):
         return connection.cursor();
 
     def check_database(self, cursor):
-        cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'kaf_demo'")
+        # query = f'"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{self.dbname}'"'
+        query = "SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'kaf_demo'"
+        cursor.execute(query)
         exists = cursor.fetchone()
         if not exists:
             cursor.execute('CREATE DATABASE kaf_demo with '
@@ -94,4 +101,8 @@ class postgres_database_handler(object):
 
 
 if __name__ == "__main__":
-    postgres_database_handler()
+    db = postgres_database_handler()
+    conn = db.connect()
+    cursor = db.get_cursor(conn)
+    db.check_database(cursor)
+    db.close_database(conn)

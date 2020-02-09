@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
-import sys
+import configparser
+import json
 import logging
 import logging.config
-import configparser
+import sys
+import time
 from kafka import KafkaProducer
+from metrics import metrics
+from socket import gethostname
 
 
 class metrics_producer(object):
@@ -30,10 +34,10 @@ class metrics_producer(object):
         self.error_log = self.config.get('Log', 'error_log')
         self.debug_log = self.config.get('Log', 'debug_log')
         self.logging_start()
+        self.hostname = gethostname()
         self.metrics_producer = self.create_producer(self.host, self.port)
-        message = "We love Lucy!"
-        self.send_message(self.topic, message)
-        print(f"Message sent: {message}")
+
+
 
     def logging_start(self):
         '''Start logging'''
@@ -66,15 +70,24 @@ class metrics_producer(object):
         client = KafkaProducer(
             bootstrap_servers=f"{host}:{port}",
             sasl_mechanism="PLAIN",
+            value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
         return client
 
     def send_message(self, topic, message):
-        # self.metrics_producer.send(topic, message)
-        self.metrics_producer.send(topic, message.encode('utf-8'))
+        self.metrics_producer.send(topic, message)
         self.metrics_producer.flush()
         return
 
+    def run(self):
+        while True:
+            message = {"hostname": gethostname(), "system_metrics": metrics.create_metrics_json()}
+            self.send_message(self.topic, message)
+            time.sleep(10)
+
+        time.sleep(10)
+
 
 if __name__ == "__main__":
-    metrics_producer()
+    # metrics_producer()
+    metrics_producer().run()
