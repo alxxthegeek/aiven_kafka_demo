@@ -8,7 +8,9 @@ import json
 import logging
 import time
 import threading
+import metrics_consumer
 from kafka import KafkaConsumer
+from pgsql_database import postgres_database_handler
 
 
 
@@ -16,7 +18,11 @@ def create_consumer(host, port, topic):
     consumer = KafkaConsumer(
         topic,
         bootstrap_servers=f"{host}:{port}",
-        sasl_mechanism="PLAIN",
+        client_id="system-metrics1",
+        security_protocol="SSL",
+        ssl_cafile="ca.pem",
+        ssl_certfile="service.cert",
+        ssl_keyfile="service.key",
         value_deserializer=lambda m: json.loads(m.decode('utf-8')))
     consumer.subscribe([topic])
     return consumer
@@ -40,20 +46,22 @@ def get_config():
 class Consumer(threading.Thread):
     def __init__(self, config=get_config()):
         daemon = True
-        print('starting')
+        print('Starting Consumer')
         self.host, self.port, self.topic = config
         self.consumer = create_consumer(self.host, self.port, self.topic)
+        self.db = postgres_database_handler()
+        self.connection = postgres_database_handler().connect()
+
 
     def run(self):
         for message in self.consumer:
-            message = message.value
-            # collection.insert_one(message)
-            # print('{} added to {}'.format(message, collection))
-            print(f'Message is :{message}')
+            entries_for_database = metrics_consumer.message_extraction(message)
+            metrics_consumer.insert_to_postgres_database(self.connection, entries_for_database)
+            print("\nMessage saved\n")
 
 
 if __name__ == "__main__":
-    Consumer()
-    Consumer().run()
+    con = Consumer()
+    con.run()
 
 

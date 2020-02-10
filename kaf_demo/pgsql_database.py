@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import psycopg2
 import logging
@@ -9,7 +11,7 @@ import sys
 
 class postgres_database_handler(object):
     def __init__(self):
-        print('starting')
+        print('starting database handler')
         self.config_file = "../kaf_demo.cfg"
         self.config = configparser.ConfigParser()
         try:
@@ -27,28 +29,18 @@ class postgres_database_handler(object):
         self.info_log = self.config.get('Log', 'event_log')
         self.error_log = self.config.get('Log', 'error_log')
         self.debug_log = self.config.get('Log', 'debug_log')
-        print('config')
         self.logging_start()
 
-        # self.connection = self.connect_to_database(self.dbname, self.dbuser, self.dbpassword, self.dbhost, self.dbport)
-        # self.cursor = self.get_cursor(self.connection)
-        # self.check_database(self.cursor)
-        # print('ssuccess')
-        # self.close_database(self.connection)
-
-    def run(self):
-        postgres_database_handler()
-        return
-
     def connect_to_database(self, database_name, database_user, database_password, database_host, database_port):
-        con = psycopg2.connect(database=database_name)
-        print('have conn')
+        con = psycopg2.connect(database=database_name, user=database_user, password=database_password, host=database_host, port=database_port)
+        # con = psycopg2.connect(database=database_name)
+        print('Connected to database')
         return con
 
     def connect(self):
-        # con = psycopg2.connect(database=self.dbname, user=database=sekf,dbuser, password=self.dbpassword, host=dbhost, port=self.dbport)
-        con = psycopg2.connect(database=self.dbname)
-        print('have conn')
+        con = psycopg2.connect(database=self.dbname, user=self.dbuser, password=self.dbpassword, host=self.dbhost, port=self.dbport)
+        # con = psycopg2.connect(database=self.dbname)
+        print('Connected to database ')
         return con
 
     def get_cursor(self, connection):

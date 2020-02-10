@@ -69,7 +69,10 @@ class metrics_producer(object):
         '''
         client = KafkaProducer(
             bootstrap_servers=f"{host}:{port}",
-            sasl_mechanism="PLAIN",
+            security_protocol="SSL",
+            ssl_cafile="ca.pem",
+            ssl_certfile="service.cert",
+            ssl_keyfile="service.key",
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
         return client
@@ -77,6 +80,7 @@ class metrics_producer(object):
     def send_message(self, topic, message):
         self.metrics_producer.send(topic, message)
         self.metrics_producer.flush()
+        print('Message sent')
         return
 
     def run(self):

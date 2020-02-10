@@ -18,7 +18,10 @@ from socket import gethostname
 def create_producer(host, port):
     producer = KafkaProducer(
         bootstrap_servers=f"{host}:{port}",
-        sasl_mechanism="PLAIN",
+        security_protocol="SSL",
+        ssl_cafile="ca.pem",
+        ssl_certfile="service.cert",
+        ssl_keyfile="service.key",
         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     return producer
 
@@ -40,13 +43,14 @@ def get_config():
 class Producer(threading.Thread):
     def __init__(self, config=get_config()):
         daemon = True
-        print('starting')
+        print('Starting Producer')
         self.host, self.port, self.topic = config
         self.producer = create_producer(self.host, self.port)
 
     def run(self):
         while True:
             self.producer.send(self.topic, {"hostname": gethostname(), "system_metrics": metrics.create_metrics_json()})
+            print('Message sent')
             time.sleep(10)
 
 
