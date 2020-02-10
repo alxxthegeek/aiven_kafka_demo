@@ -5,10 +5,14 @@ import json
 from datetime import datetime
 
 from kafka import KafkaConsumer
-from pgsql_database import postgres_database_handler
+from pgsql_database import postgresDatabaseHandler
 
 
 def message_extraction(msg):
+    """
+    Extract the Metrics data from the kafka message
+    :param msg: Kafka message
+    """
     timestamp = msg.timestamp
     date_time = datetime.fromtimestamp(timestamp / 1e3)
     message = msg.value
@@ -22,9 +26,11 @@ def message_extraction(msg):
 
 
 def insert_to_postgres_database(connection, data):
-    '''
-
-    '''
+    """
+    Insert the data from the message into the PostgreSQL table.
+    :param connection: connection to the database
+    :param data: List of lists of data to be inserted into PostgreSQL
+    """
     cursor = connection.cursor()
     for val in data:
         cursor.execute("INSERT INTO system_metrics (datetime, hostname, metric, value) VALUES (%s, %s, %s, %s)", val)
@@ -44,7 +50,7 @@ if __name__ == "__main__":
         ssl_keyfile="service.key",
         sasl_mechanism="PLAIN",
     )
-    db = postgres_database_handler()
+    db = postgresDatabaseHandler()
     connection = db.connect()
     for msg in consumer:
         entries_for_database = message_extraction(msg)

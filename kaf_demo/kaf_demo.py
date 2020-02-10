@@ -3,11 +3,11 @@ import concurrent.futures
 import logging
 import threading
 import time
-
+import metrics_consumer
 
 from metrics_producer import Producer
 #from metrics_prod import metrics_producer
-from metrics_con import Consumer
+#from metrics_con import Consumer
 from util import util
 
 

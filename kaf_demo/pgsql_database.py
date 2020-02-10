@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import psycopg2
@@ -9,9 +8,13 @@ import configparser
 import sys
 
 
-class postgres_database_handler(object):
+class postgresDatabaseHandler(object):
+    """
+    PostgreSQL Database  handler.
+    Connects to a specified PostgreSQL database and table
+    """
     def __init__(self):
-        print('starting database handler')
+        print('Starting database handler')
         self.config_file = "../kaf_demo.cfg"
         self.config = configparser.ConfigParser()
         try:
@@ -31,23 +34,31 @@ class postgres_database_handler(object):
         self.debug_log = self.config.get('Log', 'debug_log')
         self.logging_start()
 
-    def connect_to_database(self, database_name, database_user, database_password, database_host, database_port):
-        con = psycopg2.connect(database=database_name, user=database_user, password=database_password, host=database_host, port=database_port)
-        # con = psycopg2.connect(database=database_name)
-        print('Connected to database')
-        return con
-
     def connect(self):
-        con = psycopg2.connect(database=self.dbname, user=self.dbuser, password=self.dbpassword, host=self.dbhost, port=self.dbport)
-        # con = psycopg2.connect(database=self.dbname)
+        """
+        Connect to the database using the psycogp2 library connect function
+
+        :return conn: Returns a connection object for the database
+        """
+        con = psycopg2.connect(database=self.dbname, user=self.dbuser, password=self.dbpassword, host=self.dbhost,
+                               port=self.dbport)
         print('Connected to database ')
         return con
 
     def get_cursor(self, connection):
+        """
+        Get cursor
+
+        :param connection: Connection to the database
+        """
         return connection.cursor();
 
     def check_database(self, cursor):
-        # query = f'"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{self.dbname}'"'
+        """
+        Connect to the database and check that it exists
+
+        :param cursor:  database cursor
+        """
         query = "SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'kaf_demo'"
         cursor.execute(query)
         exists = cursor.fetchone()
@@ -62,12 +73,11 @@ class postgres_database_handler(object):
     def close_database(self, connection):
         '''
         Close the connection (or handle) to the database
+
+        :param connection: database connection
+        :return
         '''
         connection.close()
-        return
-
-    def get_table_info(self):
-
         return
 
     def logging_start(self):
@@ -79,9 +89,14 @@ class postgres_database_handler(object):
         return
 
     def create_log_file(self, filename, level):
-        """Create log files , set handler and formating """
+        """
+        Create log files , set handler and formating
+
+        :param filename: log file name
+        :param level: Log level to set
+        :return
+        """
         handler = logging.handlers.RotatingFileHandler(filename)
-        handler = logging.FileHandler(filename)
         handler.setLevel(level)
         handler.maxBytes = 256000000
         handler.backupCount = 10
@@ -93,7 +108,7 @@ class postgres_database_handler(object):
 
 
 if __name__ == "__main__":
-    db = postgres_database_handler()
+    db = postgresDatabaseHandler()
     conn = db.connect()
     cursor = db.get_cursor(conn)
     db.check_database(cursor)
