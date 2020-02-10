@@ -111,9 +111,10 @@ Logging code is from previous projects of mine(pretty simple).
 
 Implementation is using a single producer and single consumer.
 Performance could be improved by  implementing a separate producer for each metric type and a separate consumer using threads.
-A threaded alternative to metrics.prod.py is metrics_producer.py. In this implementation it does not provide any benefits.
+A threaded alternative to metrics_producer.py is metrics.prod.py. In this implementation it does not provide any benefits.
+The corresponding metri
 
-In the producer used the python-kafka serializer as I saw it in an example(medium article) and decided to use it.
+The metrics producer uses python-kafka serializer as I saw it in an example(medium article) and decided to use it.
 
 Only eight metrics were implemented - total cpu %, current cpu frequency (GHz), memory use(Total memory usage), percent memory use(%),
 network traffic in (bytes received), network traffic out(bytes sent) and total network traffic(bytes received and sent).
@@ -127,17 +128,27 @@ so reverted to using a loop and saving each metric from the message separately. 
 No recovery from errors is implemented.If an error or exception occurs the system will exit.
 
 The table schema is simple(naive) for ease/speed of implementation and is fairly wasteful. It does not record the metric type or
-type of units. A more optimal solution would be a table per metric
+type of units. A more optimal solution would be a table per metric or to use a time series database like InfluxDB.
 
 The solution is manually deployed.
 A better solution would have been to setup the project in a virtual env and then deploy the virtual env via pip.
 
 All the logging, get_config() and other utility functions, could have been moved to util.py for a much cleaner implementation.
+In a production version I would remove all the print statements and minimize the logging to log only what was required.
+Having good logs is important but need to keep them clean and to the point otherwise log diving can be very tedious.
 
 I first install kafka and postgres on a centos vm.
 Got my code running.
 Then setup the services on Aiven.
 Then got the code running against the services.
+
+metrics_producer and metrics_consumer work.
+
+metrics_con.py - doesn't work its a threaded version of the metrics_consumer but gets a json error.
+kaf_demo.py - does not work - It starts the consumer and producer but is not fully working. Consumer thread does not get started.
+Tests do not work and I ran out of time.
+
+
 
 
 References:

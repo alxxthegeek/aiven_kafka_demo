@@ -100,8 +100,6 @@ class metrics_producer(object):
             self.send_message(self.topic, message)
             time.sleep(10)
 
-        time.sleep(10)
-
 
 if __name__ == "__main__":
     metrics_producer().run()

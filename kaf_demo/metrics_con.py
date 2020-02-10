@@ -13,13 +13,13 @@ from kafka import KafkaConsumer
 from pgsql_database import postgres_database_handler
 
 
-
 def create_consumer(host, port, topic):
     """
     Create Kafka message consumer
 
     :param host: Kafka host to connect to
     :param port: Port Kafka is running on
+    :param topic: Kafka topic to consumer messages from
     :return consumer : returns the consumer object
     """
     consumer = KafkaConsumer(
@@ -58,6 +58,7 @@ class Consumer(threading.Thread):
     """
     Consumer class to read message from Kafka Topic
     """
+
     def __init__(self, config=get_config()):
         daemon = True
         print('Starting Consumer')
@@ -76,5 +77,3 @@ class Consumer(threading.Thread):
 if __name__ == "__main__":
     con = Consumer()
     con.run()
-
-

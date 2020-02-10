@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json
 import psutil
-from hurry.filesize import size
 
 
 def get_total_cpu_usage():

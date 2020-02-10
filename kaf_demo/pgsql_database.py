@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import psycopg2
+import configparser
 import logging
 import logging.config
-import configparser
 import sys
+
+import psycopg2
 
 
 class postgresDatabaseHandler(object):
@@ -13,6 +14,7 @@ class postgresDatabaseHandler(object):
     PostgreSQL Database  handler.
     Connects to a specified PostgreSQL database and table
     """
+
     def __init__(self):
         print('Starting database handler')
         self.config_file = "../kaf_demo.cfg"
