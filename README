@@ -6,19 +6,21 @@ Exercise
 
 Installation
 
-
+git clone https://github.com/alxxthegeek/aiven_kafka_demo.git
+cd aiven_kafka_demo
+pip3 install -r requirements.txt
 
 
 How to use
 
-
+open two windows
+1. python3 metrics_producer.py
+2. python3 metrics_consumer.py
 
 PostgreSQL schema
 
 Database kaf_demo
-
 Table system_metrics
-
 
 CREATE TABLE public.system_metrics (
     id SERIAL NOT NULL,
@@ -29,60 +31,53 @@ CREATE TABLE public.system_metrics (
     CONSTRAINT sys_metrics_prikey PRIMARY KEY (id)
 );
 
- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO aivenadmin;
- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public To aivenadmin;
- ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO aivenadmin;
 
+select * from system_metrics ORDER BY datetime DESC LIMIT 40;
++----+--------------------------+--------+---------------------+----------+
+|id  |datetime                  |hostname|metric               |value     |
++----+--------------------------+--------+---------------------+----------+
+|1800|2020-02-10 15:00:09.644000|kaf     |total_cpu            |3.2       |
+|1796|2020-02-10 14:59:59.394000|kaf     |percent_memory_use   |65.9      |
+|1795|2020-02-10 14:59:59.394000|kaf     |available_memory     |685416450 |
+|1797|2020-02-10 14:59:59.394000|kaf     |network_traffic_in   |366120896 |
+|1793|2020-02-10 14:59:59.394000|kaf     |current_cpu_frequency|3092.839  |
+|1794|2020-02-10 14:59:59.394000|kaf     |memory_use           |2009927680|
+|1792|2020-02-10 14:59:59.394000|kaf     |total_cpu            |2.9       |
+|1798|2020-02-10 14:59:59.394000|kaf     |network_traffic_out  |366120896 |
+|1799|2020-02-10 14:59:59.394000|kaf     |total_network_traffic|904035200 |
+|1789|2020-02-10 14:59:49.130000|kaf     |network_traffic_in   |366112992 |
+|1788|2020-02-10 14:59:49.130000|kaf     |percent_memory_use   |65.9      |
+|1787|2020-02-10 14:59:49.130000|kaf     |available_memory     |685395970 |
+|1791|2020-02-10 14:59:49.130000|kaf     |total_network_traffic|904019520 |
+|1790|2020-02-10 14:59:49.130000|kaf     |network_traffic_out  |366112992 |
+|1784|2020-02-10 14:59:49.130000|kaf     |total_cpu            |2.1       |
+|1786|2020-02-10 14:59:49.130000|kaf     |memory_use           |2009927680|
+|1785|2020-02-10 14:59:49.130000|kaf     |current_cpu_frequency|3092.839  |
+|1780|2020-02-10 14:59:38.885000|kaf     |percent_memory_use   |65.9      |
+|1781|2020-02-10 14:59:38.885000|kaf     |network_traffic_in   |366103136 |
+|1779|2020-02-10 14:59:38.885000|kaf     |available_memory     |685379580 |
+|1782|2020-02-10 14:59:38.885000|kaf     |network_traffic_out  |366103136 |
+|1777|2020-02-10 14:59:38.885000|kaf     |current_cpu_frequency|3092.839  |
+|1783|2020-02-10 14:59:38.885000|kaf     |total_network_traffic|904000190 |
+|1776|2020-02-10 14:59:38.885000|kaf     |total_cpu            |1.8       |
+|1778|2020-02-10 14:59:38.885000|kaf     |memory_use           |2009927680|
+|1774|2020-02-10 14:59:28.641000|kaf     |network_traffic_out  |366095168 |
+|1770|2020-02-10 14:59:28.641000|kaf     |memory_use           |2009927680|
+|1769|2020-02-10 14:59:28.641000|kaf     |current_cpu_frequency|3092.839  |
+|1771|2020-02-10 14:59:28.641000|kaf     |available_memory     |685363200 |
+|1772|2020-02-10 14:59:28.641000|kaf     |percent_memory_use   |65.9      |
+|1775|2020-02-10 14:59:28.641000|kaf     |total_network_traffic|903984130 |
+|1773|2020-02-10 14:59:28.641000|kaf     |network_traffic_in   |366095168 |
+|1768|2020-02-10 14:59:28.641000|kaf     |total_cpu            |2.6       |
+|1765|2020-02-10 14:59:18.399000|kaf     |network_traffic_in   |366087264 |
+|1766|2020-02-10 14:59:18.399000|kaf     |network_traffic_out  |366087264 |
+|1763|2020-02-10 14:59:18.399000|kaf     |available_memory     |685355010 |
+|1762|2020-02-10 14:59:18.399000|kaf     |memory_use           |2009927680|
+|1764|2020-02-10 14:59:18.399000|kaf     |percent_memory_use   |65.9      |
+|1760|2020-02-10 14:59:18.399000|kaf     |total_cpu            |2.6       |
+|1767|2020-02-10 14:59:18.399000|kaf     |total_network_traffic|903968770 |
++----+--------------------------+--------+---------------------+----------+
 
-
- kaf_demo=# SELECT COUNT(*) FROM system_metrics;
- count
--------
-   848
-(1 row)
-
-kaf_demo=# select * from system_metrics;
- id  |        datetime         | hostname |        metric         |    value
------+-------------------------+----------+-----------------------+-------------
-   1 | 2020-02-09 22:17:50.37  | kaf      | total_cpu             |         9.1
-   2 | 2020-02-09 22:17:50.37  | kaf      | current_cpu_frequency |     3092.84
-   3 | 2020-02-09 22:17:50.37  | kaf      | memory_use            | 2.00993e+09
-   4 | 2020-02-09 22:17:50.37  | kaf      | available_memory      | 6.86539e+08
-   5 | 2020-02-09 22:17:50.37  | kaf      | percent_memory_use    |        65.8
-   6 | 2020-02-09 22:17:50.37  | kaf      | network_traffic_in    | 2.27999e+08
-   7 | 2020-02-09 22:17:50.37  | kaf      | network_traffic_out   | 2.27999e+08
-   8 | 2020-02-09 22:17:50.37  | kaf      | total_network_traffic | 7.46554e+08
-   9 | 2020-02-09 22:18:00.39  | kaf      | total_cpu             |        40.9
-  10 | 2020-02-09 22:18:00.39  | kaf      | current_cpu_frequency |     3092.84
-  11 | 2020-02-09 22:18:00.39  | kaf      | memory_use            | 2.00993e+09
-  12 | 2020-02-09 22:18:00.39  | kaf      | available_memory      | 6.79444e+08
-  13 | 2020-02-09 22:18:00.39  | kaf      | percent_memory_use    |        66.2
-  14 | 2020-02-09 22:18:00.39  | kaf      | network_traffic_in    | 2.28014e+08
-  15 | 2020-02-09 22:18:00.39  | kaf      | network_traffic_out   | 2.28014e+08
-  16 | 2020-02-09 22:18:00.39  | kaf      | total_network_traffic | 7.46584e+08
-  17 | 2020-02-09 22:18:10.51  | kaf      | total_cpu             |        23.9
-  18 | 2020-02-09 22:18:10.51  | kaf      | current_cpu_frequency |     3092.84
-  19 | 2020-02-09 22:18:10.51  | kaf      | memory_use            | 2.00993e+09
-  20 | 2020-02-09 22:18:10.51  | kaf      | available_memory      | 6.77962e+08
-  21 | 2020-02-09 22:18:10.51  | kaf      | percent_memory_use    |        66.3
-  22 | 2020-02-09 22:18:10.51  | kaf      | network_traffic_in    | 2.28033e+08
-  23 | 2020-02-09 22:18:10.51  | kaf      | network_traffic_out   | 2.28033e+08
-  24 | 2020-02-09 22:18:10.51  | kaf      | total_network_traffic |  7.4662e+08
-  25 | 2020-02-09 22:18:20.541 | kaf      | total_cpu             |        19.3
-  26 | 2020-02-09 22:18:20.541 | kaf      | current_cpu_frequency |     3092.84
-  27 | 2020-02-09 22:18:20.541 | kaf      | memory_use            | 2.00993e+09
-  28 | 2020-02-09 22:18:20.541 | kaf      | available_memory      | 6.78019e+08
-  29 | 2020-02-09 22:18:20.541 | kaf      | percent_memory_use    |        66.3
-  30 | 2020-02-09 22:18:20.541 | kaf      | network_traffic_in    | 2.28045e+08
-  31 | 2020-02-09 22:18:20.541 | kaf      | network_traffic_out   | 2.28045e+08
-  32 | 2020-02-09 22:18:20.541 | kaf      | total_network_traffic | 7.46645e+08
-  33 | 2020-02-09 22:18:30.584 | kaf      | total_cpu             |        26.2
-  34 | 2020-02-09 22:18:30.584 | kaf      | current_cpu_frequency |     3092.84
-  35 | 2020-02-09 22:18:30.584 | kaf      | memory_use            | 2.00993e+09
-  36 | 2020-02-09 22:18:30.584 | kaf      | available_memory      | 6.78076e+08
-  37 | 2020-02-09 22:18:30.584 | kaf      | percent_memory_use    |        66.3
-  38 | 2020-02-09 22:18:30.584 | kaf      | network_traffic_in    | 2.28057e+08
-  39 | 2020-02-09 22:18:30.584 | kaf      | network_traffic_out   | 2.28057e+08
 
 
 Discussion

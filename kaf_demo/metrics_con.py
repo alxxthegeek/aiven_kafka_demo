@@ -52,7 +52,6 @@ class Consumer(threading.Thread):
         self.db = postgres_database_handler()
         self.connection = postgres_database_handler().connect()
 
-
     def run(self):
         for message in self.consumer:
             entries_for_database = metrics_consumer.message_extraction(message)

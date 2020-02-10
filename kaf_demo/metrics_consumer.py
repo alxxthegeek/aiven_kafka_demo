@@ -11,7 +11,8 @@ from pgsql_database import postgres_database_handler
 def message_extraction(msg):
     timestamp = msg.timestamp
     date_time = datetime.fromtimestamp(timestamp / 1e3)
-    message = msg.value.decode("utf-8")
+    message = msg.value
+    print(message)
     metrics = json.loads(message)
     hostname = metrics['hostname']
     data = metrics['system_metrics']
@@ -45,7 +46,7 @@ if __name__ == "__main__":
         sasl_mechanism="PLAIN",
     )
     db = postgres_database_handler()
-    connection = postgres_database_handler().connect()
+    connection = db.connect()
     for msg in consumer:
         entries_for_database = message_extraction(msg)
         insert_to_postgres_database(connection, entries_for_database)
