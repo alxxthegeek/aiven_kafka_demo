@@ -112,6 +112,27 @@ type of units. A more optimal solution would be a table per metric
 The solution is manually deployed.
 A better solution would have been to setup the project in a virtual env and then deploy the virtual env via pip.
 
+I first install kafka and postgres on a centos vm.
+Got my code running.
+Then setup the services on Aiven.
+Then got the code running against the services.
+
+
+References:
+https://aiven.io/blog/data-streaming-made-simple-with-apache-kafka/
+https://help.aiven.io/en/articles/489573-getting-started-with-aiven-postgresql
+https://aiven.io/blog/getting-started-with-aiven-kafka/
+https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-centos-7#step-5-%E2%80%94-testing-the-installation
+http://kafka-python.readthedocs.io/
+https://kafka.apache.org/quickstart
+https://www.psycopg.org/docs/usage.html
+https://timber.io/blog/hello-world-in-kafka-using-python/
+
+Code/example to use the python-kafka deserializer
+https://medium.com/@mukeshkumar_46704/consume-json-messages-from-kafka-using-kafka-pythons-deserializer-859f5d39e02c
+https://towardsdatascience.com/kafka-python-explained-in-10-lines-of-code-800e3e07dad1
+
+
 
 
 
