@@ -31,6 +31,7 @@ def create_producer(host, port):
         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     return producer
 
+
 def get_config():
     """
     Get the configuration file and read the values specified
