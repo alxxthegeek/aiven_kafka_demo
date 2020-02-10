@@ -1,10 +1,28 @@
 
 Exercise
+========
+
+Your task is to implement a system that generates operating system metrics and
+passes the events through Aiven Kafka instance to Aiven PostgreSQL database.
+For this, you need a Kafka producer which sends data to a Kafka topic, and a
+Kafka consumer storing the data to Aiven PostgreSQL database. For practical
+reasons, these components may run in the same machine (or container or whatever
+system you choose), but in production use similar components would run in
+different systems.
+
+You can choose what metric or metrics you collect and send. You can implement
+metrics collection by yourself or use any available tools or libraries.
+
+Even though this is a small concept program, returned homework should include
+tests and proper packaging. If your tests require Kafka and PostgreSQL
+services, for simplicity your tests can assume those are already running,
+instead of integrating Aiven service creation and deleting.
 
 
 
 
 Installation
+============
 
 git clone https://github.com/alxxthegeek/aiven_kafka_demo.git
 cd aiven_kafka_demo
@@ -12,13 +30,14 @@ pip3 install -r requirements.txt
 
 
 How to use
+==========
 
 open two windows
 1. python3 metrics_producer.py
 2. python3 metrics_consumer.py
 
 PostgreSQL schema
-
+================
 Database kaf_demo
 Table system_metrics
 
@@ -81,6 +100,7 @@ select * from system_metrics ORDER BY datetime DESC LIMIT 40;
 
 
 Discussion
+==========
 
 Logs are stored into
 ../kaf_demo/logs
@@ -111,6 +131,8 @@ type of units. A more optimal solution would be a table per metric
 
 The solution is manually deployed.
 A better solution would have been to setup the project in a virtual env and then deploy the virtual env via pip.
+
+All the logging, get_config() and other utility functions, could have been moved to util.py for a much cleaner implementation.
 
 I first install kafka and postgres on a centos vm.
 Got my code running.

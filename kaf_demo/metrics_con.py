@@ -15,6 +15,13 @@ from pgsql_database import postgres_database_handler
 
 
 def create_consumer(host, port, topic):
+    """
+    Create Kafka message consumer
+
+    :param host: Kafka host to connect to
+    :param port: Port Kafka is running on
+    :return consumer : returns the consumer object
+    """
     consumer = KafkaConsumer(
         topic,
         bootstrap_servers=f"{host}:{port}",
@@ -29,6 +36,10 @@ def create_consumer(host, port, topic):
 
 
 def get_config():
+    """
+    Get the configuration file and read the values specified
+    :return: returns a tuple of the host, port and topic.
+    """
     config_file = "../kaf_demo.cfg"
     config = configparser.ConfigParser()
     try:
@@ -44,6 +55,9 @@ def get_config():
 
 
 class Consumer(threading.Thread):
+    """
+    Consumer class to read message from Kafka Topic
+    """
     def __init__(self, config=get_config()):
         daemon = True
         print('Starting Consumer')
