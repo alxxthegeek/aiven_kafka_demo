@@ -12,7 +12,6 @@ def message_extraction(msg):
     timestamp = msg.timestamp
     date_time = datetime.fromtimestamp(timestamp / 1e3)
     message = msg.value
-    print(message)
     metrics = json.loads(message)
     hostname = metrics['hostname']
     data = metrics['system_metrics']
